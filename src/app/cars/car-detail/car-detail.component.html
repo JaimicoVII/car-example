@@ -1,0 +1,69 @@
+<div class="animated fadeIn">
+  <div class="row mb-3">
+    <div class="col text-left">
+      <h5>Car detail</h5>
+    </div>
+    <div class="col text-right" *ngIf="!carLoading">
+      <button class="btn btn-outline-danger" (click)="onCarRemove()" [disabled]="editingCar">Delete Car</button>
+    </div>
+  </div>
+  <ng-container *ngIf="!carLoading; else loadingCar">
+    <form [formGroup]="editForm" (ngSubmit)="onEditCar()">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fas fa-car"></i></span>
+        </div>
+        <input type="text" class="form-control" placeholder="Make" formControlName="make" required [ngClass]="{ 'is-invalid rounded-right': submitted && ef.make.errors }">
+        <div *ngIf="submitted && ef.make.errors" class="invalid-feedback">
+          <div *ngIf="ef.make.errors.required">Make is required.</div>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fas fa-car-side"></i></span>
+        </div>
+        <input type="text" class="form-control" placeholder="Model" formControlName="model" required [ngClass]="{ 'is-invalid rounded-right': submitted && ef.model.errors }">
+        <div *ngIf="submitted && ef.model.errors" class="invalid-feedback">
+          <div *ngIf="ef.model.errors.required">Model is required.</div>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fas fa-palette"></i></span>
+        </div>
+        <input type="text" class="form-control" placeholder="Color" formControlName="color" required [ngClass]="{ 'is-invalid rounded-right': submitted && ef.color.errors }">
+        <div *ngIf="submitted && ef.color.errors" class="invalid-feedback">
+          <div *ngIf="ef.color.errors.required">Color is required.</div>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fas fa-tag"></i></span>
+        </div>
+        <input type="text" class="form-control" placeholder="Plate" formControlName="plate" required [ngClass]="{ 'is-invalid rounded-right': submitted && ef.plate.errors }">
+        <div *ngIf="submitted && ef.plate.errors" class="invalid-feedback">
+          <div *ngIf="ef.plate.errors.required">Plate is required.</div>
+        </div>
+      </div>
+      <div>
+        <button type="button" class="btn btn-outline-danger mr-1" [routerLink]="'/cars'" [disabled]="editingCar">Cancel</button>
+        <button type="submit" class="btn btn-success ml-1" *ngIf="!editingCar; else btnLoading" [disabled]="editForm.pristine">
+          Guardar
+        </button>
+        <ng-template #btnLoading>
+          <button type="button" class="btn btn-success" disabled>
+            <span *ngIf="editingCar" class="spinner-border spinner-border-sm mr-1"></span>
+            Guardando
+          </button>
+        </ng-template>
+      </div>
+    </form>
+
+  </ng-container>
+  <ng-template #loadingCar>
+    <div>
+      <i class="spinner-border"></i>
+      Loading Car...
+    </div>
+  </ng-template>
+</div>

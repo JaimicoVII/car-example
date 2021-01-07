@@ -1,0 +1,28 @@
+.app-body {
+  padding-top: 20px;
+  min-height: 100vh;
+  background-color: #efefef;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card-body {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  overflow-x: hidden;
+}
+
+.sidebar {
+  width: 200px;
+}
+
+.main {
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+  padding-left: 15px;
+}

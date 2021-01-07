@@ -1,0 +1,156 @@
+<div class="animated fadeIn">
+  <div class="row mb-3">
+    <div class="col text-left">
+      <h5>Cars list</h5>
+    </div>
+    <div class="col text-right">
+      <button class="btn btn-outline-success" (click)="createCarModal.show()">Add new car</button>
+    </div>
+  </div>
+  <table class="table table-hover bg-white border">
+    <thead class="text-center thead-dark">
+      <tr>
+        <th scope="col" class="border-right border-left">ID</th>
+        <th scope="col" class="border-right">Make</th>
+        <th scope="col" class="border-right">Model</th>
+        <th scope="col" class="border-right">Color</th>
+        <th scope="col" class="border-right">Plate</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container>
+        <tr class="text-center" *ngFor="let car of recentCars; index as i;" @fadeAnimation>
+          <th scope="row" class="text-capitalize border-right border-top-0">{{ car.id }}</th>
+          <td class="text-capitalize border-right border-top-0">{{ car.make }}</td>
+          <td class="border-right border-top-0">{{ car.model }}</td>
+          <td class="border-right border-top-0">{{ car.color }}</td>
+          <td class="border-right border-top-0">{{ car.plate }}</td>
+          <td class="text-center border-top-0">
+            <div class="btn-group" role="group" aria-label="Action Buttons {{ i }}">
+              <button type="button" class="btn btn-outline-primary py-0 px-1" (click)="onCarDetail(car)"><i class="fa fa-pencil-alt"></i></button>
+              <button type="button" class="btn btn-outline-danger py-0 px-1" (click)="onCarRemove(car)"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="(carsResult$ | async) as carsResult; else carsLoadingOrError">
+        <ng-container *ngIf="carsResult && carsResult.length > 0; else noMatchingResult">
+          <tr class="text-center" *ngFor="let car of carsResult; index as i;">
+            <th scope="row" class="text-capitalize border-right border-top-0">{{ car.id }}</th>
+            <td class="text-capitalize border-right border-top-0">{{ car.make }}</td>
+            <td class="border-right border-top-0">{{ car.model }}</td>
+            <td class="border-right border-top-0">{{ car.color }}</td>
+            <td class="border-right border-top-0">{{ car.plate }}</td>
+            <td class="text-center border-top-0">
+              <div class="btn-group" role="group" aria-label="Action Buttons {{ i }}">
+                <button type="button" class="btn btn-outline-primary py-0 px-1" (click)="onCarDetail(car)"><i class="fa fa-pencil-alt"></i></button>
+                <button type="button" class="btn btn-outline-danger py-0 px-1" (click)="onCarRemove(car)"><i class="fa fa-trash-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #noMatchingResult>
+          <tr>
+            <th scope="row" class="text-center"><i class="fas fa-car-side"></i></th>
+            <td colspan="5">No Cars found!</td>
+          </tr>
+        </ng-template>
+      </ng-container>
+      <ng-template #carsLoadingOrError>
+        <ng-container *ngIf="errorLoadingCars; else loadingCars">
+          <tr>
+            <th scope="row" class="text-center"><i class="fas fa-exclamation-triangle"></i></th>
+            <td colspan="5">There was an error, please try again later!</td>
+          </tr>
+        </ng-container>
+        <ng-template #loadingCars>
+          <tr class="text-center" *ngFor="let car of carsList; index as i;">
+            <th scope="row" class="text-capitalize border-right border-top-0">{{ car.id }}</th>
+            <td class="text-capitalize border-right border-top-0">{{ car.make }}</td>
+            <td class="border-right border-top-0">{{ car.model }}</td>
+            <td class="border-right border-top-0">{{ car.color }}</td>
+            <td class="border-right border-top-0">{{ car.plate }}</td>
+            <td class="text-center border-top-0">
+              <div class="btn-group" role="group" aria-label="Action Buttons {{ i }}">
+                <button type="button" class="btn btn-outline-primary py-0 px-1" (click)="onCarDetail(car)"><i class="fa fa-pencil-alt"></i></button>
+                <button type="button" class="btn btn-outline-danger py-0 px-1" (click)="onCarRemove(car)"><i class="fa fa-trash-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row" class="text-center"><i class="spinner-border spinner-border-sm"></i></th>
+            <th scope="row" colspan="5">Loading Cars...</th>
+          </tr>
+        </ng-template>
+      </ng-template>
+
+    </tbody>
+  </table>
+
+</div>
+
+<div bsModal #createCarModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" (onHidden)="resetCreateForm()">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form [formGroup]="createForm" (ngSubmit)="onCreateCar()">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modalLabel">Create Car</h4>
+          <button type="button" class="close" (click)="createCarModal.hide();" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-car"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Make" formControlName="make" required [ngClass]="{ 'is-invalid rounded-right': submitted && cf.make.errors }">
+            <div *ngIf="submitted && cf.make.errors" class="invalid-feedback">
+              <div *ngIf="cf.make.errors.required">Make is required.</div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-car-side"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Model" formControlName="model" required [ngClass]="{ 'is-invalid rounded-right': submitted && cf.model.errors }">
+            <div *ngIf="submitted && cf.model.errors" class="invalid-feedback">
+              <div *ngIf="cf.model.errors.required">Model is required.</div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-palette"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Color" formControlName="color" required [ngClass]="{ 'is-invalid rounded-right': submitted && cf.color.errors }">
+            <div *ngIf="submitted && cf.color.errors" class="invalid-feedback">
+              <div *ngIf="cf.color.errors.required">Color is required.</div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-tag"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Plate" formControlName="plate" required [ngClass]="{ 'is-invalid rounded-right': submitted && cf.plate.errors }">
+            <div *ngIf="submitted && cf.plate.errors" class="invalid-feedback">
+              <div *ngIf="cf.plate.errors.required">Plate is required.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" (click)="createCarModal.hide();" [disabled]="creatingCar">Cancel</button>
+          <button type="submit" class="btn btn-success" *ngIf="!creatingCar; else btnLoading">
+            Guardar
+          </button>
+          <ng-template #btnLoading>
+            <button type="button" class="btn btn-success" disabled>
+              <span *ngIf="creatingCar" class="spinner-border spinner-border-sm mr-1"></span>
+              Guardando
+            </button>
+          </ng-template>
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
